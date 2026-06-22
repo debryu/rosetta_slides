@@ -1,0 +1,566 @@
+\documentclass[aspectratio=169, 10pt]{beamer}
+
+\usetheme{Madrid}
+
+\usepackage{amsmath, amssymb}
+\usepackage{bm}
+\usepackage{tikz}
+\usetikzlibrary{positioning, arrows.meta}
+\usepackage{booktabs}
+\usepackage{mathtools}
+
+\definecolor{mblue}{RGB}{0,70,140}
+\setbeamercolor{structure}{fg=mblue}
+\setbeamercolor{palette primary}{bg=mblue, fg=white}
+\setbeamercolor{palette secondary}{bg=mblue!80, fg=white}
+\setbeamercolor{palette tertiary}{bg=mblue!60, fg=white}
+\setbeamercolor{palette quaternary}{bg=mblue!40, fg=black}
+
+\title[Rosetta Stone Problem]{The Incomplete Rosetta Stone Problem}
+\subtitle{Identifiability Results for Multi-View Nonlinear ICA}
+\author[Gresele et al.\ 2020]{%
+  L.~Gresele \and P.K.~Rubenstein \and A.~Mehrjou \and
+  F.~Locatello \and B.~Schölkopf}
+\institute[UAI 2020]{Uncertainty in Artificial Intelligence (UAI), 2020}
+\date{Presented by Nicola Debole}
+
+\tikzset{
+  latent/.style  = {circle, draw, thick, minimum size=0.85cm, font=\small},
+  observed/.style= {circle, draw, thick, fill=gray!25, minimum size=0.85cm, font=\small},
+  arr/.style     = {->, >=Stealth, thick}
+}
+
+% ---------------------------------------------------------------
+\begin{document}
+% ---------------------------------------------------------------
+
+\maketitle
+
+% ============================================================
+% SLIDE 1 — SETTING
+% ============================================================
+\begin{frame}{Setting: The Generative Model}
+  \begin{columns}[T]
+    \column{0.60\textwidth}
+      \textbf{Two views of a shared latent source $\mathbf{s}$:}
+      \begin{align*}
+        \mathbf{x}_1 &= \mathbf{f}_1(\mathbf{s})\\
+        \mathbf{x}_2 &= \mathbf{f}_2(\mathbf{s})\\
+        p(\mathbf{s}) &= \prod_i p_i(s_i)
+      \end{align*}
+      \begin{itemize}
+        \item $\mathbf{s}=(s_1,\ldots,s_D)\in\mathbb{R}^D$: \textbf{mutually independent} components
+        \item $\mathbf{f}_1,\mathbf{f}_2$: smooth, invertible, \emph{unknown} nonlinear mixings
+        \item $\mathbf{x}_1,\mathbf{x}_2$ observed; $\mathbf{s}$ latent
+        \item \textbf{Goal:} recover $\mathbf{s}$ from $(\mathbf{x}_1,\mathbf{x}_2)$ only
+      \end{itemize}
+      \medskip
+      \textbf{Rosetta Stone metaphor:}\\
+      two texts in different unknown languages sharing a
+      common underlying meaning — the shared $\mathbf{s}$ is the key
+
+    \column{0.36\textwidth}
+      \centering\vspace{1em}
+      \begin{tikzpicture}
+        \node[latent]   (s)  at (0,0)    {$\mathbf{s}$};
+        \node[observed] (x1) at (2, 0.9) {$\mathbf{x}_1$};
+        \node[observed] (x2) at (2,-0.9) {$\mathbf{x}_2$};
+        \draw[arr] (s) -- node[above left, font=\scriptsize]{$\mathbf{f}_1$} (x1);
+        \draw[arr] (s) -- node[below left, font=\scriptsize]{$\mathbf{f}_2$} (x2);
+      \end{tikzpicture}\\[0.6em]
+      \small Shaded = observed
+  \end{columns}
+\end{frame}
+
+% ============================================================
+% SLIDE 2 — HISTORY (1/2)
+% ============================================================
+\begin{frame}{A Brief History of ICA Identifiability (1/2)}
+  \textbf{Independent Component Analysis (ICA):} recover $\mathbf{s}$ from a single observation
+  $\mathbf{x}=\mathbf{f}(\mathbf{s})$
+
+  \bigskip
+  \begin{block}{Linear ICA: Identifiable \hfill\normalfont\small Darmois 1953; Comon 1994}
+    If $\mathbf{f}$ is linear, the model is identifiable up to permutation and scaling of
+    sources — requires at most one Gaussian component.
+  \end{block}
+
+  \bigskip
+  \begin{alertblock}{Nonlinear ICA: Provably Non-Identifiable
+      \hfill\normalfont\small Hyvärinen \& Pajunen, 1999}
+    For an arbitrary nonlinear $\mathbf{f}$:
+    \begin{itemize}
+      \item Infinitely many $(\mathbf{f}',\mathbf{s}')$ pairs are consistent with any observed $p(\mathbf{x})$
+      \item Any smooth bijection of $\mathbf{s}$ yields an equally valid explanation
+    \end{itemize}
+    \[
+      \Rightarrow \text{Without further constraints, } \mathbf{s}
+      \textbf{ cannot be recovered}
+    \]
+  \end{alertblock}
+\end{frame}
+
+% ============================================================
+% SLIDE 3 — HISTORY (2/2)
+% ============================================================
+\begin{frame}{A Brief History of ICA Identifiability (2/2): Auxiliary Variables}
+  \textbf{Breakthrough:} condition independence on an auxiliary variable $\mathbf{u}$
+  \hfill{\small Hyvärinen, Sasaki \& Turner, 2019}
+
+  \bigskip
+  \begin{block}{Conditional Independence Model}
+    Replace unconditional independence of $\mathbf{s}$ with:
+    \[
+      \log p(\mathbf{s}\mid\mathbf{u}) = \sum_i q_i(s_i,\,\mathbf{u})
+    \]
+    Under this and a \emph{variability} condition on $\mathbf{u}$, the model
+    \textbf{becomes identifiable}.
+  \end{block}
+
+  \bigskip
+  \textbf{Key limitation:} requires observing the auxiliary variable $\mathbf{u}$
+  \begin{itemize}
+    \item $\mathbf{u}$ may be unknown, hidden, or costly to observe
+    \item E.g.\ time-segment index, experimental condition — not always available
+  \end{itemize}
+
+  \bigskip
+  \begin{exampleblock}{This Paper's Contribution}
+    Remove the need for $\mathbf{u}$ by exploiting \textbf{multiple views} of the same source $\mathbf{s}$
+  \end{exampleblock}
+\end{frame}
+
+% ============================================================
+% SLIDE 4 — MULTI-VIEW SETTING
+% ============================================================
+\begin{frame}{Non-Linear ICA with Multiple Views}
+  \textbf{Key idea:} jointly observing $(\mathbf{x}_1,\mathbf{x}_2)$ constrains the inverse problem enough for
+  identifiability
+
+  \bigskip
+  \textbf{Contrastive learning task:} train a classifier to distinguish
+  \begin{columns}
+    \column{0.44\textwidth}\centering
+      \textbf{Positive pairs}\\
+      $(\mathbf{x}_1,\mathbf{x}_2)$ — \emph{same} realisation of $\mathbf{s}$
+    \column{0.08\textwidth}\centering vs.
+    \column{0.44\textwidth}\centering
+      \textbf{Negative pairs}\\
+      $(\mathbf{x}_1,\mathbf{x}_2^*)$ — \emph{different} realisations of $\mathbf{s}$
+  \end{columns}
+
+  \bigskip
+  \textbf{Component-wise corruption model:}
+  \[
+    \mathbf{x}_i = \mathbf{f}_i\!\bigl(\mathbf{g}_i(\mathbf{s},\mathbf{n}_i)\bigr),
+    \qquad
+    \mathbf{n}_i \perp\!\!\!\perp \mathbf{s},
+    \qquad
+    g_{ij}(\mathbf{s},\mathbf{n}_i) = g_{ij}(s_j, n_{ij})
+  \]
+  Noise acts on each source dimension \emph{independently}, before mixing by $\mathbf{f}_i$
+
+  \bigskip
+  \textbf{Requirements:}
+  \begin{itemize}
+    \item $\mathbf{f}_i$ invertible; at least one view must be stochastic (some noise)
+    \item \textbf{Sufficiently Distinct Views (SDV)} — discussed in the limitations section
+  \end{itemize}
+\end{frame}
+
+% ============================================================
+% SLIDE 5 — LOG MI: DEFINITION
+% ============================================================
+\begin{frame}{Log Mutual Information: Definition}
+  \textbf{Pointwise log mutual information:}
+  \[
+    \log\frac{p(\mathbf{x}_1,\mathbf{x}_2)}{p(\mathbf{x}_1)\,p(\mathbf{x}_2)}
+    \;=\;
+    \log p(\mathbf{x}_1,\mathbf{x}_2)
+    \;-\;
+    \log p(\mathbf{x}_1)
+    \;-\;
+    \log p(\mathbf{x}_2)
+  \]
+
+  \bigskip
+  \begin{columns}
+    \column{0.48\textwidth}
+    \begin{block}{Independent case: $\mathbf{x}_1\perp\!\!\!\perp\mathbf{x}_2$ (no shared $\mathbf{s}$)}
+      \[
+        p(\mathbf{x}_1,\mathbf{x}_2) = p(\mathbf{x}_1)\,p(\mathbf{x}_2)
+      \]
+      \[
+        \text{ratio}=1 \;\Rightarrow\; \log\text{MI}=0
+      \]
+    \end{block}
+
+    \column{0.48\textwidth}
+    \begin{block}{Dependent case: shared $\mathbf{s}$}
+      \[
+        p(\mathbf{x}_1,\mathbf{x}_2) \neq p(\mathbf{x}_1)\,p(\mathbf{x}_2)
+      \]
+      \[
+        \log\text{MI} \neq 0
+      \]
+      Positive / negative depending on the correlation direction
+    \end{block}
+  \end{columns}
+
+  \bigskip
+  \textbf{Intuition:} the log MI measures how much more likely a pair $(\mathbf{x}_1,\mathbf{x}_2)$ is under the joint distribution compared to if the two views were independent
+\end{frame}
+
+% ============================================================
+% SLIDE 6 — LOG MI: KEY FACTORISATION
+% ============================================================
+\begin{frame}{Log MI: The Key Factorisation}
+  Under the component-wise corruption model, the log MI decomposes \textbf{component-wise}:
+
+  \bigskip
+  \[
+    \log p(\mathbf{x}_1,\mathbf{x}_2) - \log p(\mathbf{x}_1)\,p(\mathbf{x}_2)
+    \;=\;
+    \sum_i \alpha_i\!\bigl(s_i,\,g_i(s_i,n_i)\bigr)
+    \;-\;
+    \sum_i \delta_i\!\bigl(g_i(s_i,n_i)\bigr)
+  \]
+  where $s_i = f_{1,i}^{-1}(\mathbf{x}_1)$ and $g_i(s_i,n_i) = f_{2,i}^{-1}(\mathbf{x}_2)$.
+
+  \bigskip
+  \textbf{Why this is the central structural result:}
+  \begin{itemize}
+    \item Each term depends on only \textbf{one component} of $\mathbf{s}$ at a time
+    \item The log MI is a sum of per-component contributions — no cross-component terms
+    \item A classifier trained to estimate the log MI \textbf{must} learn this component-wise structure
+    \item $\Rightarrow$ the classifier's internal representation encodes the \textbf{independent components of $\mathbf{s}$}
+  \end{itemize}
+
+  \medskip
+  This factorisation is the engine behind \emph{all} identifiability proofs in the paper.
+\end{frame}
+
+% ============================================================
+% SLIDE 7 — LOG MI: COUNTERFACTUAL + SHUFFLING
+% ============================================================
+\begin{frame}{Log MI: Counterfactual Interpretation \& Shuffling Trick}
+  \begin{columns}[T]
+    \column{0.50\textwidth}
+      \textbf{What is $p(\mathbf{x}_1)\,p(\mathbf{x}_2)$?}
+
+      \bigskip
+      \begin{block}{Counterfactual Distribution}
+        $p(\mathbf{x}_1)\,p(\mathbf{x}_2)$ is the distribution of $(\mathbf{x}_1,\mathbf{x}_2)$ \emph{if
+        the two views shared no common source}
+
+        \medskip
+        \textit{``What would $\mathbf{x}_2$ look like if it came from a \textbf{different} $\mathbf{s}$ than $\mathbf{x}_1$?''}
+
+        \medskip
+        $\to$ removes \emph{all} information shared between views
+      \end{block}
+
+    \column{0.46\textwidth}
+      \textbf{Sampling via batch shuffling}
+
+      \medskip
+      We never compute $p(\mathbf{x}_1)\,p(\mathbf{x}_2)$ analytically.
+      Instead:
+      \begin{enumerate}
+        \item Draw $\mathbf{x}_1^{(i)}$ from sample $i$;
+              draw $\mathbf{x}_2^{(j)}$ from sample $j\neq i$
+        \item Different index $\Rightarrow$ different $\mathbf{s}$ $\Rightarrow$
+              pair is from $p(\mathbf{x}_1)\,p(\mathbf{x}_2)$
+      \end{enumerate}
+
+      \medskip
+      These are the \textbf{negative pairs} in contrastive learning.
+
+      \medskip
+      No density estimation required —
+      just re-pair samples within the batch!
+  \end{columns}
+\end{frame}
+
+% ============================================================
+% SLIDE 8 — LOG MI: GAN DISCRIMINATOR
+% ============================================================
+\begin{frame}{Log MI: Optimal GAN Discriminator}
+  \textbf{Setup:} train a classifier $C\colon(\mathbf{x}_1,\mathbf{x}_2)\to[0,1]$ to distinguish positive from
+  negative pairs with equal class probabilities:
+  \[
+    \underbrace{p(\mathbf{x}_1,\mathbf{x}_2)}_{\text{positive (class 0)}}
+    \quad\text{vs.}\quad
+    \underbrace{p(\mathbf{x}_1)\,p(\mathbf{x}_2)}_{\text{negative (class 1)}}
+  \]
+
+  \bigskip
+  \begin{theorem}[Goodfellow et al., 2014 — Optimal discriminator]
+    The optimal binary classifier for a symmetric binary classification task satisfies:
+    \[
+      C^*(\mathbf{x}) = \frac{P_0(\mathbf{x})}{P_0(\mathbf{x}) + P_1(\mathbf{x})}
+    \]
+  \end{theorem}
+
+  \medskip
+  In our setting ($P_0 = p(\mathbf{x}_1,\mathbf{x}_2)$, $P_1 = p(\mathbf{x}_1)p(\mathbf{x}_2)$):
+  \[
+    C^*(\mathbf{x}_1,\mathbf{x}_2)
+    = \frac{p(\mathbf{x}_1,\mathbf{x}_2)}{p(\mathbf{x}_1,\mathbf{x}_2)+p(\mathbf{x}_1)p(\mathbf{x}_2)}
+    = \sigma\!\left(\log\frac{p(\mathbf{x}_1,\mathbf{x}_2)}{p(\mathbf{x}_1)p(\mathbf{x}_2)}\right)
+  \]
+
+  \medskip
+  $C^*$ is a monotone function of the log MI \;$\Rightarrow$\; training the classifier $\equiv$ learning the
+  shared source $\mathbf{s}$
+\end{frame}
+
+% ============================================================
+% SLIDE 9 — ONE NOISELESS VIEW: SETTING
+% ============================================================
+\begin{frame}{One Noiseless View: Setting}
+  \begin{columns}[T]
+    \column{0.56\textwidth}
+      \textbf{Generative model (§3.1):}
+      \begin{align*}
+        \mathbf{x}_1 &= \mathbf{f}_1(\mathbf{s}) & &\text{(noiseless)}\\
+        \mathbf{x}_2 &= \mathbf{f}_2\!\bigl(\mathbf{g}(\mathbf{s},\mathbf{n})\bigr) & &\text{(noisy)}
+      \end{align*}
+      \[
+        p(\mathbf{s})=\prod_i p_i(s_i),\quad
+        p(\mathbf{n})=\prod_i p_i(n_i),\quad
+        \mathbf{n}\perp\!\!\!\perp\mathbf{s}
+      \]
+
+      \bigskip
+      \begin{itemize}
+        \item $\mathbf{g}$ is \textbf{component-wise}: corrupts each $s_i$ independently
+        \item $\mathbf{f}_1,\mathbf{f}_2$: arbitrary nonlinear invertible mixings
+      \end{itemize}
+
+      \bigskip
+      \textbf{Practical motivation:}\\
+      one precise instrument + one noisy device\\
+      (e.g.\ high-quality fMRI + fast-but-noisy EEG)
+
+    \column{0.40\textwidth}
+      \centering\vspace{1em}
+      \begin{tikzpicture}
+        \node[latent]   (s)  at (0, 0)   {$\mathbf{s}$};
+        \node[observed] (x1) at (2, 1.1) {$\mathbf{x}_1$};
+        \node[latent]   (n)  at (0,-1.6) {$\mathbf{n}$};
+        \node[observed] (x2) at (2,-0.4) {$\mathbf{x}_2$};
+        \draw[arr] (s)  -- node[above left, font=\scriptsize]{$\mathbf{f}_1$} (x1);
+        \draw[arr] (s)  -- (x2);
+        \draw[arr] (n)  -- (x2);
+        \node[font=\scriptsize] at (1.6, 0.4) {$\mathbf{f}_2\!\circ\!\mathbf{g}$};
+      \end{tikzpicture}\\[0.5em]
+      \small Shaded = observed
+  \end{columns}
+\end{frame}
+
+% ============================================================
+% SLIDE 10 — ONE NOISELESS VIEW: THEOREM 1
+% ============================================================
+\begin{frame}{One Noiseless View: Theorem 1}
+  \begin{theorem}[Theorem 1 — informal]
+    Suppose $\boldsymbol{\alpha}$ satisfies the SDV assumption. Train a classifier using the
+    regression function:
+    \[
+      r(\mathbf{x}_1,\mathbf{x}_2) = \sum_i \psi_i\!\bigl(h_i(\mathbf{x}_1),\;\mathbf{x}_2\bigr)
+    \]
+    where $\mathbf{h}=(h_1,\ldots,h_D)$ are invertible smooth functions with smooth inverses.
+
+    \medskip
+    Then in the infinite-data, infinite-capacity limit, $\mathbf{h}$ \textbf{inverts $\mathbf{f}_1$} up to
+    component-wise invertible transformations: the $h_i(\mathbf{x}_1)$ recover the independent
+    components of $\mathbf{s}$.
+  \end{theorem}
+
+  \bigskip
+  \textbf{What this gives us:}
+  \begin{itemize}
+    \item Exact recovery of $\mathbf{s}$ from the noiseless view $\mathbf{x}_1$ (up to per-component scalar)
+    \item The factorised form of $r$ forces each $\psi_i$ to depend on a single source component
+  \end{itemize}
+
+  \medskip
+  \textbf{Proof sketch:} component-wise factorisation of log MI $\;\Rightarrow\;$ each $\psi_i$ term must
+  match the corresponding $\alpha_i$ term $\;\Rightarrow\;$ $h_i$ must invert $f_{1,i}$
+\end{frame}
+
+% ============================================================
+% SLIDE 11 — ONE NOISELESS VIEW: COROLLARY 3 + THEOREM 4
+% ============================================================
+\begin{frame}{One Noiseless View: Corollary 3 \& Theorem 4}
+  \begin{block}{Corollary 3 — Recovering from the \emph{noisy} view}
+    Using an alternative factorisation of the log MI with
+    $r(\mathbf{x}_1,\mathbf{x}_2)=\sum_i \psi_i(\mathbf{x}_1, h_i(\mathbf{x}_2))$,\\
+    $\mathbf{h}$ inverts $\mathbf{f}_2$ in the sense that $h_i(\mathbf{x}_2)$ recovers
+    $g_i(s_i,n_i)$ up to component-wise invertible transformations.
+  \end{block}
+
+  \bigskip
+  \begin{theorem}[Theorem 4 — Aligned joint recovery]
+    If \emph{both} $\boldsymbol{\alpha}$ and $\boldsymbol{\gamma}$ satisfy SDV, using:
+    \[
+      r(\mathbf{x}_1,\mathbf{x}_2) = \sum_i \psi_i\!\bigl(h_{1,i}(\mathbf{x}_1),\;h_{2,i}(\mathbf{x}_2)\bigr)
+    \]
+    $\mathbf{h}_1$ and $\mathbf{h}_2$ invert $\mathbf{f}_1$ and $\mathbf{f}_2$ respectively, and are \textbf{aligned}:
+    \[
+      h_{1,i}(\mathbf{x}_1) \;\perp\!\!\!\perp\; h_{2,j}(\mathbf{x}_2)
+      \quad \forall\, i\neq j
+    \]
+  \end{theorem}
+
+  \medskip
+  \textbf{Alignment matters:} component $i$ from view 1 corresponds to component $i$ from view 2 —
+  both representations refer to the \emph{same} source factor
+\end{frame}
+
+% ============================================================
+% SLIDE 12 — TWO NOISY VIEWS
+% ============================================================
+\begin{frame}{Two Noisy Views}
+  \begin{columns}[T]
+    \column{0.56\textwidth}
+      \textbf{Setting (§3.2):}
+      \[
+        \mathbf{x}_i = \mathbf{f}_i\!\bigl(\mathbf{g}_i(\mathbf{s},\mathbf{n}_i)\bigr),\quad i=1,2
+      \]
+      Both views corrupted; exact recovery of $\mathbf{s}$ is impossible.
+
+      \bigskip
+      \begin{theorem}[Theorem 5 — informal]
+        If $\boldsymbol{\eta}$ and $\boldsymbol{\lambda}$ satisfy SDV, the algorithm recovers
+        $\mathbf{g}_1(\mathbf{s},\mathbf{n}_1)$ and $\mathbf{g}_2(\mathbf{s},\mathbf{n}_2)$
+        with \textbf{aligned} representations.
+      \end{theorem}
+
+      \begin{itemize}
+        \item As noise $\to 0$:\;
+              $\mathbf{g}_i(\mathbf{s},\mathbf{n}_i)\to\mathbf{s}$\;
+              $\Rightarrow$ exact recovery (Corollary 6)
+        \item Practical setting: two different modalities at different noise levels
+          (e.g.\ simultaneous fMRI + optical imaging)
+      \end{itemize}
+
+    \column{0.40\textwidth}
+      \centering\vspace{0.8em}
+      \begin{tikzpicture}
+        \node[latent]   (s)  at (0, 0)    {$\mathbf{s}$};
+        \node[latent]   (n1) at (-1.6, 1.1) {$\mathbf{n}_1$};
+        \node[latent]   (n2) at (-1.6,-1.1) {$\mathbf{n}_2$};
+        \node[observed] (x1) at ( 1.6, 1.1) {$\mathbf{x}_1$};
+        \node[observed] (x2) at ( 1.6,-1.1) {$\mathbf{x}_2$};
+        \draw[arr] (s)  -- (x1);
+        \draw[arr] (n1) -- (x1);
+        \draw[arr] (s)  -- (x2);
+        \draw[arr] (n2) -- (x2);
+      \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+% ============================================================
+% SLIDE 13 — MULTIPLE NOISY VIEWS
+% ============================================================
+\begin{frame}{Multiple Noisy Views}
+  \textbf{Setting (§3.3):} $N$ simultaneous noisy views of $\mathbf{s}$
+  \[
+    \mathbf{x}_i = \mathbf{f}_i\!\bigl(\mathbf{g}_i(\mathbf{s},\mathbf{n}_i)\bigr),
+    \quad i=1,\ldots,N
+  \]
+
+  \medskip
+  \textbf{Central question:} as $N\to\infty$, can we recover $\mathbf{s}$ \emph{exactly}
+  even when every view is noisy?
+
+  \bigskip
+  \begin{theorem}[Theorem 8 — informal]
+    Under sufficient regularity conditions (bounded noise variance, non-degeneracy of
+    $\mathbf{g}$), exact recovery of $\mathbf{s}$ up to affine ambiguity is possible in
+    the limit $N\to\infty$.
+  \end{theorem}
+
+  \bigskip
+  \textbf{Intuition:} independent noises average out while the common signal accumulates
+  \[
+    \mathbf{s}
+    \;\approx\;
+    \Omega^N(\mathbf{s},\mathbf{n})
+    = \frac{1}{N}\sum_{i=1}^N e_i\circ k_i(\mathbf{s}+\mathbf{n}_i)
+    \;\xrightarrow{N\to\infty}\;\mathbf{s}
+  \]
+
+  \medskip
+  This extends the two-view results of §3.1--3.2 by exploiting infinitely many views
+  rather than vanishingly small noise in finitely many views.
+\end{frame}
+
+% ============================================================
+% SLIDE 14 — LIMITATIONS: SDV
+% ============================================================
+\begin{frame}{Limitations: Sufficiently Distinct Views (SDV)}
+  \begin{definition}[Sufficiently Distinct Views — Definition 2]
+    Functions $\alpha_i(y_i,t_i)$ satisfy SDV if for any $\mathbf{y}$,
+    there exist $2D$ distinct values $\mathbf{t}_j$, $j=1,\ldots,2D$, such that the vectors
+    \[
+      \mathbf{w}_{\boldsymbol{\alpha}}(\mathbf{y},\mathbf{t}_j)
+      =\bigl(\alpha_1'',\ldots,\alpha_D'',\,\alpha_1',\ldots,\alpha_D'\bigr)
+    \]
+    are \textbf{linearly independent}
+    \hfill
+    $\bigl(\alpha_i'=\partial\alpha_i/\partial t,\;\alpha_i''=\partial^2\alpha_i/\partial t^2\bigr)$
+  \end{definition}
+
+  \medskip
+  \textbf{Informal meaning:} the conditional log-probability of the corruption must vary
+  \emph{sufficiently} as a function of the source value
+
+  \medskip
+  \begin{itemize}
+    \item Connected to the ``Variability'' assumption of Hyvärinen et al.\ [2019]
+    \item \textbf{Violated} if the two views are identical $\Rightarrow$ no new information
+          $\Rightarrow$ no identifiability
+    \item The noise variables $\mathbf{n}_i$ are \textbf{essential}: SDV cannot hold in a
+          fully deterministic setting
+  \end{itemize}
+
+  \medskip
+  \textbf{Practical meaning:} the views must be different enough — two identical sensors
+  provide nothing; two genuinely different modalities enable identifiability
+\end{frame}
+
+% ============================================================
+% SLIDE 15 — LIMITATIONS: COMPONENT-WISE CORRUPTER
+% ============================================================
+\begin{frame}{Limitations: Component-wise Corrupter in Practice}
+  \textbf{Theory requires:} $\mathbf{g}$ corrupts $\mathbf{s}$ \emph{component-wise}
+  — noise acts on each latent factor \emph{before} mixing by $\mathbf{f}$
+
+  \bigskip
+  \begin{alertblock}{Problem: Standard Augmentations Act on $\mathbf{x}$, Not on $\mathbf{s}$}
+    Cropping, colour jitter, Gaussian blur, etc.\ transform \textbf{pixels}\\
+    $\Rightarrow$ corruption is applied to $\mathbf{x}$, not component-wise to $\mathbf{s}$
+    $\Rightarrow$ model assumptions are violated
+  \end{alertblock}
+
+  \bigskip
+  \textbf{Example: Shapes3D dataset}
+  \begin{itemize}
+    \item Has explicit generative factors: floor colour, wall colour, object shape, scale,
+          orientation, \ldots
+    \item Looks ideal on paper — but \textbf{no mechanism to inject noise at the factor level}
+          before rendering
+    \item Any augmentation applied post-rendering operates on $\mathbf{x}$, not on $\mathbf{s}$
+    \item $\Rightarrow$ the component-wise corruption assumption is violated
+  \end{itemize}
+
+  \bigskip
+  \textbf{Conclusion:} it is \textbf{hard to find a dataset that genuinely satisfies the model}
+  — the data generation pipeline must expose a separable noise injection point at the level of
+  the generative factors $\mathbf{s}$
+\end{frame}
+
+% ---------------------------------------------------------------
+\end{document}
