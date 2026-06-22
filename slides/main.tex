@@ -99,8 +99,11 @@
       \hfill\normalfont\small Hyvärinen \& Pajunen, 1999}
     For an arbitrary nonlinear $\mathbf{f}$:
     \begin{itemize}
-      \item Infinitely many $(\mathbf{f}',\mathbf{s}')$ pairs are consistent with any observed $p(\mathbf{x})$
-      \item Any smooth bijection of $\mathbf{s}$ yields an equally valid explanation
+      \item Infinitely many $(\mathbf{f}',\mathbf{s}')$ pairs are consistent with the same
+            observed data distribution $p(\mathbf{x})$
+      \item For any smooth bijection $\varphi$, the pair
+            $\bigl(\mathbf{f}\circ\varphi^{-1},\;\varphi(\mathbf{s})\bigr)$
+            produces the identical $p(\mathbf{x})$ — equally valid, but different sources
     \end{itemize}
     \[
       \Rightarrow \text{Without further constraints, } \mathbf{s}
@@ -130,7 +133,8 @@
   \textbf{Key limitation:} requires observing the auxiliary variable $\mathbf{u}$
   \begin{itemize}
     \item $\mathbf{u}$ may be unknown, hidden, or costly to observe
-    \item E.g.\ time-segment index, experimental condition — not always available
+    \item E.g.\ the stimulus shown to a participant (``face'' vs.\ ``house'') —
+          available in a controlled lab, but absent from unlabelled real-world recordings
   \end{itemize}
 
   \bigskip
@@ -178,7 +182,38 @@
 \end{frame}
 
 % ============================================================
-% SLIDE 5 — LOG MI: DEFINITION
+% SLIDE 5 — BRIDGE: WHY LOG MI?
+% ============================================================
+\begin{frame}{Why Log Mutual Information?}
+  We have a binary classification task: distinguish
+  \[
+    \underbrace{p(\mathbf{x}_1,\mathbf{x}_2)}_{\text{positive (shared }\mathbf{s}\text{)}}
+    \quad\text{vs.}\quad
+    \underbrace{p(\mathbf{x}_1)\,p(\mathbf{x}_2)}_{\text{negative (independent)}}
+  \]
+
+  \bigskip
+  \textbf{Key question:} what does the \emph{optimal} classifier actually compute?
+
+  \bigskip
+  \begin{block}{The bridge (Goodfellow et al., 2014)}
+    The optimal Bayes classifier for this symmetric task outputs a monotone function of
+    the \textbf{pointwise log mutual information}:
+    \[
+      \log \frac{p(\mathbf{x}_1,\mathbf{x}_2)}{p(\mathbf{x}_1)\,p(\mathbf{x}_2)}
+    \]
+  \end{block}
+
+  \bigskip
+  \begin{itemize}
+    \item Training the classifier $\equiv$ learning the log MI
+    \item The structure of the log MI directly encodes the sources $\mathbf{s}$
+    \item All identifiability results in the paper exploit this structure
+  \end{itemize}
+\end{frame}
+
+% ============================================================
+% SLIDE 6 — LOG MI: DEFINITION
 % ============================================================
 \begin{frame}{Log Mutual Information: Definition}
   \textbf{Pointwise log mutual information:}
@@ -304,7 +339,7 @@
   \]
 
   \bigskip
-  \begin{theorem}[Goodfellow et al., 2014 — Optimal discriminator]
+  \begin{theorem}[Optimal discriminator (Goodfellow et al., 2014)]
     The optimal binary classifier for a symmetric binary classification task satisfies:
     \[
       C^*(\mathbf{x}) = \frac{P_0(\mathbf{x})}{P_0(\mathbf{x}) + P_1(\mathbf{x})}
@@ -486,9 +521,10 @@
 
   \bigskip
   \begin{theorem}[Theorem 8 — informal]
-    Under sufficient regularity conditions (bounded noise variance, non-degeneracy of
-    $\mathbf{g}$), exact recovery of $\mathbf{s}$ up to affine ambiguity is possible in
-    the limit $N\to\infty$.
+    If the per-view noises $\mathbf{n}_i$ are mutually independent across views and the
+    corruption functions $\mathbf{g}_i$ (parameterised by $\boldsymbol{\lambda}_i$) satisfy
+    the SDV condition with bounded noise variance, then exact recovery of $\mathbf{s}$ up
+    to affine ambiguity is possible in the limit $N\to\infty$.
   \end{theorem}
 
   \bigskip
