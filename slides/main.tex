@@ -609,4 +609,265 @@
 \end{frame}
 
 % ---------------------------------------------------------------
+\appendix
+% ---------------------------------------------------------------
+
+% ============================================================
+% APPENDIX TITLE
+% ============================================================
+\begin{frame}[plain]
+  \centering\vfill
+  {\Large\textbf{Appendix: Proof Sketches}}\\[1em]
+  \normalsize
+  Theorems 1, 4, 5, 8 \quad Corollaries 3, 6 \quad Lemma 7
+  \vfill
+\end{frame}
+
+% ============================================================
+% APPENDIX A — KEY FACTORISATION DERIVATION
+% ============================================================
+\begin{frame}{Proof: Key Log-MI Factorisation (Equation 8)}
+  \textbf{Goal:} show $\log p(\mathbf{x}_1,\mathbf{x}_2)-\log p(\mathbf{x}_1)p(\mathbf{x}_2)$
+  decomposes component-wise.
+
+  \medskip
+  Since $\mathbf{x}_1=\mathbf{f}_1(\mathbf{s})$ is invertible:
+  \[
+    \log p(\mathbf{x}_2\mid\mathbf{x}_1) - \log p(\mathbf{x}_2)
+    = \log p(\mathbf{x}_2\mid\mathbf{s}) - \log p(\mathbf{x}_2)
+  \]
+
+  Since $\mathbf{x}_2 = \mathbf{f}_2(\mathbf{g}(\mathbf{s},\mathbf{n}))$ with
+  $\mathbf{g}$ \emph{component-wise} and $\mathbf{n}\perp\!\!\!\perp\mathbf{s}$:
+  \[
+    \log p(\mathbf{x}_2\mid\mathbf{s}) - \log p(\mathbf{x}_2)
+    = \sum_i \bigl[\log p(g_i(s_i,n_i)\mid s_i) - \log p(g_i(s_i,n_i))\bigr]
+    + \log\det J
+  \]
+
+  The Jacobians introduced by $\mathbf{f}_2^{-1}$ cancel between the two terms, giving:
+  \[
+    \boxed{
+      \log p(\mathbf{x}_1,\mathbf{x}_2) - \log p(\mathbf{x}_1)p(\mathbf{x}_2)
+      = \sum_i \alpha_i(s_i, g_i(s_i,n_i)) - \sum_i \delta_i(g_i(s_i,n_i))
+    }
+  \]
+
+  \textbf{Key point:} each term depends on only \emph{one} index $i$ — no cross-component coupling.
+\end{frame}
+
+% ============================================================
+% APPENDIX B — THEOREM 1 PROOF SKETCH
+% ============================================================
+\begin{frame}{Proof Sketch: Theorem 1 (One Noiseless View)}
+  \textbf{Setting:} $\mathbf{x}_1=\mathbf{f}_1(\mathbf{s})$,
+  $\mathbf{x}_2=\mathbf{f}_2(\mathbf{g}(\mathbf{s},\mathbf{n}))$,
+  classifier $r(\mathbf{x}_1,\mathbf{x}_2)=\sum_i\psi_i(h_i(\mathbf{x}_1),\mathbf{x}_2)$.
+
+  \medskip
+  \begin{enumerate}
+    \item \textbf{Factorisation:} the log MI equals
+          $\sum_i\alpha_i(s_i,g_i(s_i,n_i))-\sum_i\delta_i(g_i(s_i,n_i))$
+          (Appendix A above).
+    \item \textbf{Infinite-data optimum:} in the limit of infinite data and universal
+          approximation, $r^*$ must equal the log MI everywhere.
+    \item \textbf{Functional matching:} $r$ depends on $\mathbf{x}_1$ only through
+          $h_i(\mathbf{x}_1)$. The log MI depends on $\mathbf{x}_1$ only through
+          $s_i = f_{1,i}^{-1}(\mathbf{x}_1)$. Hence $h_i(\mathbf{x}_1)$ must be a
+          function of $s_i$ alone.
+    \item \textbf{SDV (uniqueness):} the SDV condition on $\boldsymbol{\alpha}$ ensures
+          the mapping from $h_i(\mathbf{x}_1)$ to $s_i$ is invertible. Without SDV,
+          multiple $h_i$'s could achieve the same loss.
+  \end{enumerate}
+
+  \medskip
+  \textbf{Conclusion:} $h_i(\mathbf{x}_1)$ recovers $s_i$ up to a component-wise
+  invertible transformation. Full proof: Appendix D.1 of the paper.
+\end{frame}
+
+% ============================================================
+% APPENDIX C — COROLLARY 3 PROOF SKETCH
+% ============================================================
+\begin{frame}{Proof Sketch: Corollary 3 (Recovering from the Noisy View)}
+  \textbf{Alternative factorisation} (Equation 12):
+  \[
+    \log p(\mathbf{x}_1,\mathbf{x}_2) - \log p(\mathbf{x}_1)p(\mathbf{x}_2)
+    = \sum_i \gamma_i(s_i,g_i(s_i,n_i)) - \sum_i \beta_i(s_i)
+  \]
+  Now the \emph{second} argument carries the $\mathbf{x}_2$ dependence.
+
+  \medskip
+  \textbf{Key change:} use regression function
+  $r(\mathbf{x}_1,\mathbf{x}_2) = \sum_i\psi_i(\mathbf{x}_1, h_i(\mathbf{x}_2))$.
+
+  \medskip
+  Repeating the Theorem 1 argument:
+  \begin{enumerate}
+    \item $r^*$ must equal the log MI in the infinite-data limit.
+    \item The log MI now depends on $\mathbf{x}_2$ only through $g_i(s_i,n_i)$.
+    \item Therefore $h_i(\mathbf{x}_2)$ recovers $g_i(s_i,n_i)$ up to component-wise
+          invertible transformations.
+    \item SDV on $\boldsymbol{\gamma}$ ensures uniqueness.
+  \end{enumerate}
+
+  \medskip
+  \textbf{Note:} this gives access to the \emph{corrupted} source $g_i(s_i,n_i)$, not to
+  $s_i$ directly — the noise $n_i$ cannot be disentangled from $s_i$ using this view alone.
+\end{frame}
+
+% ============================================================
+% APPENDIX D — THEOREM 4 PROOF SKETCH
+% ============================================================
+\begin{frame}{Proof Sketch: Theorem 4 (Aligned Joint Recovery)}
+  \textbf{Setting:} both $\boldsymbol{\alpha}$ and $\boldsymbol{\gamma}$ satisfy SDV.
+  Use $r(\mathbf{x}_1,\mathbf{x}_2)=\sum_i\psi_i(h_{1,i}(\mathbf{x}_1),h_{2,i}(\mathbf{x}_2))$.
+
+  \medskip
+  \begin{enumerate}
+    \item \textbf{Component-wise recovery (from Thm 1 \& Cor 3):}
+          SDV on $\boldsymbol{\alpha}$ forces $h_{1,i}(\mathbf{x}_1)\to s_i$;
+          SDV on $\boldsymbol{\gamma}$ forces $h_{2,i}(\mathbf{x}_2)\to g_i(s_i,n_i)$.
+    \item \textbf{Alignment:} because $r$ is constrained to pair
+          $h_{1,i}$ with $h_{2,i}$ inside the same $\psi_i$, the optimisation
+          forces $h_{1,i}(\mathbf{x}_1)\perp\!\!\!\perp h_{2,j}(\mathbf{x}_2)$ for
+          $i\neq j$ (they share no common factor).
+    \item \textbf{Consequence:} both $\mathbf{h}_1$ and $\mathbf{h}_2$ refer to the
+          same ordering of source components — the representations are \emph{aligned}.
+  \end{enumerate}
+
+  \medskip
+  \textbf{Distinction from Thm 1:} Theorem 1 needs SDV only on $\boldsymbol{\alpha}$
+  (one condition); Theorem 4 imposes SDV on both, which is stronger but yields
+  alignment as a bonus. Full proof: Appendix E.
+\end{frame}
+
+% ============================================================
+% APPENDIX E — THEOREM 5 PROOF SKETCH
+% ============================================================
+\begin{frame}{Proof Sketch: Theorem 5 (Two Noisy Views)}
+  \textbf{Setting:} both views are noisy,
+  $\mathbf{x}_i=\mathbf{f}_i(\mathbf{g}_i(\mathbf{s},\mathbf{n}_i))$, $i=1,2$.
+
+  \medskip
+  The log MI now admits two analogous factorisations (Equations 14--15):
+  \[
+    \log p(\mathbf{x}_1,\mathbf{x}_2) - \log p(\mathbf{x}_1)p(\mathbf{x}_2)
+    = \sum_i \eta_i(\cdot) - \sum_i \theta_i(\cdot)
+    = \sum_i \lambda_i(\cdot) - \sum_i \mu_i(\cdot)
+  \]
+  where $\boldsymbol{\eta}$ captures the $\mathbf{x}_1$-side and $\boldsymbol{\lambda}$
+  the $\mathbf{x}_2$-side dependence.
+
+  \medskip
+  \textbf{Proof strategy} (mirrors Theorem 4):
+  \begin{enumerate}
+    \item SDV on $\boldsymbol{\eta}$: $h_{1,i}(\mathbf{x}_1)$ recovers
+          $g_{1,i}(\mathbf{s},\mathbf{n}_1)$ up to component-wise invertible transformation.
+    \item SDV on $\boldsymbol{\lambda}$: $h_{2,i}(\mathbf{x}_2)$ recovers
+          $g_{2,i}(\mathbf{s},\mathbf{n}_2)$ similarly.
+    \item The shared $\mathbf{s}$ in both corruptions forces alignment:
+          $h_{1,i}(\mathbf{x}_1)\perp\!\!\!\perp h_{2,j}(\mathbf{x}_2)$ for $i\neq j$.
+  \end{enumerate}
+
+  \medskip
+  Exact recovery of $\mathbf{s}$ is impossible (both views are corrupted), but
+  Corollary 6 recovers $\mathbf{s}$ in the limit of vanishing noise.
+  Full proof: Appendix E.
+\end{frame}
+
+% ============================================================
+% APPENDIX F — COROLLARY 6
+% ============================================================
+\begin{frame}{Proof: Corollary 6 (Vanishing Noise Gives Exact Recovery)}
+  \textbf{Setup:} let $\mathbf{n}_1^{(k)} = \frac{1}{k}\bar{\mathbf{n}}$ for a fixed
+  $\bar{\mathbf{n}}\in\mathbb{R}^D$, and run Theorem 5 with noise $\mathbf{n}_1^{(k)}$
+  and $\mathbf{n}_2$.
+
+  \medskip
+  \textbf{Step 1 (noise shrinks):} as $k\to\infty$,
+  \[
+    \mathbf{g}_1(\mathbf{s},\mathbf{n}_1^{(k)}) \;\longrightarrow\; \mathbf{g}_1(\mathbf{s},\mathbf{0}) = \mathbf{s}
+  \]
+  since $\mathbf{g}_1$ is continuous and $\mathbf{g}_1(\mathbf{s},\mathbf{0})=\mathbf{s}$
+  (no corruption at zero noise).
+
+  \medskip
+  \textbf{Step 2 (algorithm output converges):} Theorem 5 guarantees that
+  $\mathbf{h}_1^{(k)}(\mathbf{x}_1)$ recovers $\mathbf{g}_1(\mathbf{s},\mathbf{n}_1^{(k)})$.
+  As $k\to\infty$, this output approaches $\mathbf{s}$ (up to component-wise invertible
+  scalar functions $e\in\mathbf{E}$):
+  \[
+    \lim_{k\to\infty}\inf_{e\in\mathbf{E}}\bigl\|\mathbf{s} - e(\mathbf{h}_1^{(k)}(\mathbf{x}_1))\bigr\| = 0
+  \]
+
+  \medskip
+  \textbf{Conclusion:} with one accurate and one progressively less noisy view,
+  the learned representation converges to the true sources $\mathbf{s}$.
+\end{frame}
+
+% ============================================================
+% APPENDIX G — LEMMA 7 PROOF SKETCH
+% ============================================================
+\begin{frame}{Proof Sketch: Lemma 7 (Averaging Operator Convergence)}
+  \textbf{Setup:} for component-wise invertible functions $e_i$, define
+  \[
+    \Omega^N_{\mathbf{e}}(\mathbf{s},\mathbf{n})
+    = \frac{1}{N}\sum_{i=1}^N e_i \circ \mathbf{k}_i(\mathbf{s}+\mathbf{n}_i)
+  \]
+
+  \textbf{Goal:} show $\Omega^N_{\mathbf{e}}(\mathbf{s},\mathbf{n})
+  \xrightarrow{\,a.s.\,} \Omega_{\mathbf{e}}(\mathbf{s})
+  := \lim_{N\to\infty}\mathbb{E}_{\mathbf{n}}[\Omega^N_{\mathbf{e}}]$ as $N\to\infty$.
+
+  \medskip
+  \begin{enumerate}
+    \item Each term $e_i\circ\mathbf{k}_i(\mathbf{s}+\mathbf{n}_i)$ has
+          $\mathbb{E}[e_i\circ\mathbf{k}_i(\mathbf{s}+\mathbf{n}_i)] = \Omega_{\mathbf{e}}(\mathbf{s})$
+          and variance $V_{e_i} \leq K$ (by assumption).
+    \item The $\mathbf{n}_i$ are mutually independent across views.
+    \item Kolmogorov's Strong Law of Large Numbers applies:
+          $\Omega^N_{\mathbf{e}} \xrightarrow{a.s.} \Omega_{\mathbf{e}}(\mathbf{s})$.
+    \item For the residuals: $R^N_{\mathbf{e},i}(\mathbf{s},\mathbf{n})
+          = e_i\circ\mathbf{k}_i(\mathbf{s}+\mathbf{n}_i) - \Omega^N_{\mathbf{e}}
+          \xrightarrow{a.s.} \mathbf{n}_i$.
+  \end{enumerate}
+
+  \medskip
+  Full proof uses the Kolmogorov SLLN for triangular arrays.
+  See Appendix G of the paper.
+\end{frame}
+
+% ============================================================
+% APPENDIX H — THEOREM 8 PROOF SKETCH
+% ============================================================
+\begin{frame}{Proof Sketch: Theorem 8 (Multiple Noisy Views, $N\to\infty$)}
+  \textbf{Setting:} $N$ views $\mathbf{x}_i=\mathbf{f}_i(\mathbf{s}+\mathbf{n}_i)$
+  with $\mathbf{n}_i$ i.i.d., zero-mean, bounded variance.
+
+  \medskip
+  \begin{enumerate}
+    \item \textbf{Pairwise alignment (Theorem 5):} apply Theorem 5 to each pair
+          $(\mathbf{x}_1,\mathbf{x}_i)$. This recovers $\mathbf{k}_1(\mathbf{s}+\mathbf{n}_1)$
+          and $\mathbf{k}_i(\mathbf{s}+\mathbf{n}_i)$ with aligned component ordering.
+    \item \textbf{Independence testing:} components that are the same across views are
+          deterministically related; different components are independent. This lets the
+          algorithm canonically align all $N$ representations.
+    \item \textbf{Averaging (Lemma 7):} once aligned,
+          \[
+            \Omega^N(\mathbf{s},\mathbf{n})
+            = \frac{1}{N}\sum_{i=1}^N e_i\circ\mathbf{k}_i(\mathbf{s}+\mathbf{n}_i)
+            \;\xrightarrow{N\to\infty}\; \boldsymbol{\alpha}\mathbf{s}+\boldsymbol{\beta}
+          \]
+          Conditions (17)--(21) of Theorem 8 guarantee that valid $e_i$'s exist such that
+          $\Omega_{\mathbf{e}}(\mathbf{s})=\boldsymbol{\alpha}\mathbf{s}+\boldsymbol{\beta}$.
+    \item \textbf{Residuals:} similarly, $R^N_{\mathbf{e},i}\xrightarrow{a.s.}
+          \boldsymbol{\alpha}\mathbf{n}_i$, recovering the per-view noise.
+  \end{enumerate}
+
+  \medskip
+  Full proof: Appendix H. The affine ambiguity $(\boldsymbol{\alpha},\boldsymbol{\beta})$
+  is unavoidable without additional constraints on the source distribution.
+\end{frame}
+
+% ---------------------------------------------------------------
 \end{document}
