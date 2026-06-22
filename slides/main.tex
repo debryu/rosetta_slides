@@ -46,7 +46,7 @@
 \maketitle
 
 % ============================================================
-% SLIDE 1 — SETTING
+% SLIDE 1: SETTING
 % ============================================================
 \begin{frame}{Setting: The Generative Model}
   \begin{columns}[T]
@@ -66,7 +66,7 @@
       \medskip
       % ,\textbf{Rosetta Stone metaphor:}\\
       % two texts in different unknown languages sharing a
-      % common underlying meaning — the shared $\mathbf{s}$ is the key
+      % common underlying meaning: the shared $\mathbf{s}$ is the key
 
     \column{0.36\textwidth}
       \centering\vspace{1em}
@@ -82,7 +82,7 @@
 \end{frame}
 
 % ============================================================
-% SLIDE 2 — HISTORY (1/2)
+% SLIDE 2: HISTORY (1/2)
 % ============================================================
 \begin{frame}{A Brief History of ICA Identifiability (1/2)}
   \textbf{Independent Component Analysis (ICA):} recover $\mathbf{s}$ from a single observation
@@ -91,7 +91,7 @@
   \bigskip
   \begin{block}{Linear ICA: Identifiable \hfill\normalfont\small Darmois 1953; Comon 1994}
     If $\mathbf{f}$ is linear, the model is identifiable up to permutation and scaling of
-    sources — requires at most one Gaussian component.
+    sources; requires at most one Gaussian component.
   \end{block}
 
   \bigskip
@@ -103,7 +103,7 @@
             observed data distribution $p(\mathbf{x})$
       \item For any smooth bijection $\varphi$, the pair
             $\bigl(\mathbf{f}\circ\varphi^{-1},\;\varphi(\mathbf{s})\bigr)$
-            produces the identical $p(\mathbf{x})$ — equally valid, but different sources
+            produces the identical $p(\mathbf{x})$ (equally valid, but different sources)
     \end{itemize}
     \[
       \Rightarrow \text{Without further constraints, } \mathbf{s}
@@ -113,7 +113,7 @@
 \end{frame}
 
 % ============================================================
-% SLIDE 3 — HISTORY (2/2)
+% SLIDE 3: HISTORY (2/2)
 % ============================================================
 \begin{frame}{A Brief History of ICA Identifiability (2/2): Auxiliary Variables}
   \textbf{Breakthrough:} condition independence on an auxiliary variable $\mathbf{u}$
@@ -145,7 +145,7 @@
 \end{frame}
 
 % ============================================================
-% SLIDE 4 — MULTI-VIEW SETTING
+% SLIDE 4: MULTI-VIEW SETTING
 % ============================================================
 \begin{frame}{Non-Linear ICA with Multiple Views}
   \textbf{Key idea:} jointly observing $(\mathbf{x}_1,\mathbf{x}_2)$ constrains the inverse problem enough for
@@ -156,11 +156,11 @@
   \begin{columns}
     \column{0.44\textwidth}\centering
       \textbf{Positive pairs}\\
-      $(\mathbf{x}_1,\mathbf{x}_2)$ — \emph{same} realisation of $\mathbf{s}$
+      $(\mathbf{x}_1,\mathbf{x}_2)$: \emph{same} realisation of $\mathbf{s}$
     \column{0.08\textwidth}\centering vs.
     \column{0.44\textwidth}\centering
       \textbf{Negative pairs}\\
-      $(\mathbf{x}_1,\mathbf{x}_2^*)$ — \emph{different} realisations of $\mathbf{s}$
+      $(\mathbf{x}_1,\mathbf{x}_2^*)$: \emph{different} realisations of $\mathbf{s}$
   \end{columns}
 
   \bigskip
@@ -178,12 +178,12 @@
   \textbf{Requirements:}
   \begin{itemize}
     \item $\mathbf{f}_i$ invertible; at least one view must be stochastic (some noise)
-    \item \textbf{Sufficiently Distinct Views (SDV)} — discussed in the limitations section
+    \item \textbf{Sufficiently Distinct Views (SDV)}, discussed in the limitations section
   \end{itemize}
 \end{frame}
 
 % ============================================================
-% SLIDE 5 — BRIDGE: WHY LOG MI?
+% SLIDE 5: BRIDGE: WHY LOG MI?
 % ============================================================
 \begin{frame}{Why Log Mutual Information?}
   We have a binary classification task: distinguish
@@ -214,7 +214,7 @@
 \end{frame}
 
 % ============================================================
-% SLIDE 6 — LOG MI: DEFINITION
+% SLIDE 6: LOG MI: DEFINITION
 % ============================================================
 \begin{frame}{Log Mutual Information: Definition}
   \textbf{Pointwise log mutual information:}
@@ -257,7 +257,7 @@
 \end{frame}
 
 % ============================================================
-% SLIDE 6 — LOG MI: KEY FACTORISATION
+% SLIDE 6: LOG MI: KEY FACTORISATION
 % ============================================================
 \begin{frame}{Log MI: The Key Factorisation}
   Under the component-wise corruption model, the log MI decomposes \textbf{component-wise}:
@@ -276,7 +276,7 @@
   \textbf{Why this is the central structural result:}
   \begin{itemize}
     \item Each term depends on only \textbf{one component} of $\mathbf{s}$ at a time
-    \item The log MI is a sum of per-component contributions — no cross-component terms
+    \item The log MI is a sum of per-component contributions (no cross-component terms)
     \item A classifier trained to estimate the log MI \textbf{must} learn this component-wise structure
     \item $\Rightarrow$ the classifier's internal representation encodes the \textbf{independent components of $\mathbf{s}$}
   \end{itemize}
@@ -286,7 +286,7 @@
 \end{frame}
 
 % ============================================================
-% SLIDE 7 — LOG MI: COUNTERFACTUAL + SHUFFLING
+% SLIDE 7: LOG MI: COUNTERFACTUAL + SHUFFLING
 % ============================================================
 \begin{frame}{Log MI: Counterfactual Interpretation \& Shuffling Trick}
   \begin{columns}[T]
@@ -322,13 +322,13 @@
       These are the \textbf{negative pairs} in contrastive learning.
 
       \medskip
-      No density estimation required —
+      No density estimation required:
       just re-pair samples within the batch!
   \end{columns}
 \end{frame}
 
 % ============================================================
-% SLIDE 8 — LOG MI: GAN DISCRIMINATOR
+% SLIDE 8: LOG MI: GAN DISCRIMINATOR
 % ============================================================
 \begin{frame}{Log MI: Optimal GAN Discriminator}
   \textbf{Setup:} train a classifier $C\colon(\mathbf{x}_1,\mathbf{x}_2)\to[0,1]$ to distinguish positive from
@@ -361,7 +361,7 @@
 \end{frame}
 
 % ============================================================
-% SLIDE 9 — ONE NOISELESS VIEW: SETTING
+% SLIDE 9: ONE NOISELESS VIEW: SETTING
 % ============================================================
 \begin{frame}{One Noiseless View: Setting}
   \begin{columns}[T]
@@ -405,10 +405,10 @@
 \end{frame}
 
 % ============================================================
-% SLIDE 10 — ONE NOISELESS VIEW: THEOREM 1
+% SLIDE 10: ONE NOISELESS VIEW: THEOREM 1
 % ============================================================
 \begin{frame}{One Noiseless View: Theorem 1}
-  \begin{theorem}[Theorem 1 — informal]
+  \begin{theorem}[Theorem 1 (informal)]
     Suppose $\boldsymbol{\alpha}$ satisfies the SDV assumption. Train a classifier using the
     regression function:
     \[
@@ -435,10 +435,10 @@
 \end{frame}
 
 % ============================================================
-% SLIDE 11 — ONE NOISELESS VIEW: COROLLARY 3 + THEOREM 4
+% SLIDE 11: ONE NOISELESS VIEW: COROLLARY 3 + THEOREM 4
 % ============================================================
 \begin{frame}{One Noiseless View: Corollary 3 \& Theorem 4}
-  \begin{block}{Corollary 3 — Recovering from the \emph{noisy} view}
+  \begin{block}{Corollary 3: Recovering from the \emph{noisy} view}
     Using an alternative factorisation of the log MI with
     $r(\mathbf{x}_1,\mathbf{x}_2)=\sum_i \psi_i(\mathbf{x}_1, h_i(\mathbf{x}_2))$,\\
     $\mathbf{h}$ inverts $\mathbf{f}_2$ in the sense that $h_i(\mathbf{x}_2)$ recovers
@@ -446,7 +446,7 @@
   \end{block}
 
   \bigskip
-  \begin{theorem}[Theorem 4 — Aligned joint recovery]
+  \begin{theorem}[Theorem 4: Aligned joint recovery]
     If \emph{both} $\boldsymbol{\alpha}$ and $\boldsymbol{\gamma}$ satisfy SDV, using:
     \[
       r(\mathbf{x}_1,\mathbf{x}_2) = \sum_i \psi_i\!\bigl(h_{1,i}(\mathbf{x}_1),\;h_{2,i}(\mathbf{x}_2)\bigr)
@@ -459,12 +459,12 @@
   \end{theorem}
 
   \medskip
-  \textbf{Alignment matters:} component $i$ from view 1 corresponds to component $i$ from view 2 —
+  \textbf{Alignment matters:} component $i$ from view 1 corresponds to component $i$ from view 2;
   both representations refer to the \emph{same} source factor
 \end{frame}
 
 % ============================================================
-% SLIDE 12 — TWO NOISY VIEWS
+% SLIDE 12: TWO NOISY VIEWS
 % ============================================================
 \begin{frame}{Two Noisy Views}
   \begin{columns}[T]
@@ -476,7 +476,7 @@
       Both views corrupted; exact recovery of $\mathbf{s}$ is impossible.
 
       \bigskip
-      \begin{theorem}[Theorem 5 — informal]
+      \begin{theorem}[Theorem 5 (informal)]
         If $\boldsymbol{\eta}$ and $\boldsymbol{\lambda}$ satisfy SDV, the algorithm recovers
         $\mathbf{g}_1(\mathbf{s},\mathbf{n}_1)$ and $\mathbf{g}_2(\mathbf{s},\mathbf{n}_2)$
         with \textbf{aligned} representations.
@@ -507,7 +507,7 @@
 \end{frame}
 
 % ============================================================
-% SLIDE 13 — MULTIPLE NOISY VIEWS
+% SLIDE 13: MULTIPLE NOISY VIEWS
 % ============================================================
 \begin{frame}{Multiple Noisy Views}
   \textbf{Setting (§3.3):} $N$ simultaneous noisy views of $\mathbf{s}$
@@ -521,7 +521,7 @@
   even when every view is noisy?
 
   \bigskip
-  \begin{theorem}[Theorem 8 — informal]
+  \begin{theorem}[Theorem 8 (informal)]
     If the per-view noises $\mathbf{n}_i$ are mutually independent across views and the
     corruption functions $\mathbf{g}_i$ (parameterised by $\boldsymbol{\lambda}_i$) satisfy
     the SDV condition with bounded noise variance, then exact recovery of $\mathbf{s}$ up
@@ -544,10 +544,10 @@
 \end{frame}
 
 % ============================================================
-% SLIDE 14 — LIMITATIONS: SDV
+% SLIDE 14: LIMITATIONS: SDV
 % ============================================================
 \begin{frame}{Limitations: Sufficiently Distinct Views (SDV)}
-  \begin{definition}[Sufficiently Distinct Views — Definition 2]
+  \begin{definition}[Sufficiently Distinct Views (Definition 2)]
     Functions $\alpha_i(y_i,t_i)$ satisfy SDV if for any $\mathbf{y}$,
     there exist $2D$ distinct values $\mathbf{t}_j$, $j=1,\ldots,2D$, such that the vectors
     \[
@@ -573,16 +573,16 @@
   \end{itemize}
 
   \medskip
-  \textbf{Practical meaning:} the views must be different enough — two identical sensors
+  \textbf{Practical meaning:} the views must be different enough: two identical sensors
   provide nothing; two genuinely different modalities enable identifiability
 \end{frame}
 
 % ============================================================
-% SLIDE 15 — LIMITATIONS: COMPONENT-WISE CORRUPTER
+% SLIDE 15: LIMITATIONS: COMPONENT-WISE CORRUPTER
 % ============================================================
 \begin{frame}{Limitations: Component-wise Corrupter in Practice}
-  \textbf{Theory requires:} $\mathbf{g}$ corrupts $\mathbf{s}$ \emph{component-wise}
-  — noise acts on each latent factor \emph{before} mixing by $\mathbf{f}$
+  \textbf{Theory requires:} $\mathbf{g}$ corrupts $\mathbf{s}$ \emph{component-wise}:
+  noise acts on each latent factor \emph{before} mixing by $\mathbf{f}$
 
   \bigskip
   \begin{alertblock}{Problem: Standard Augmentations Act on $\mathbf{x}$, Not on $\mathbf{s}$}
@@ -596,15 +596,15 @@
   \begin{itemize}
     \item Has explicit generative factors: floor colour, wall colour, object shape, scale,
           orientation, \ldots
-    \item Looks ideal on paper — but \textbf{no mechanism to inject noise at the factor level}
+    \item Looks ideal on paper, but \textbf{no mechanism to inject noise at the factor level}
           before rendering
     \item Any augmentation applied post-rendering operates on $\mathbf{x}$, not on $\mathbf{s}$
     \item $\Rightarrow$ the component-wise corruption assumption is violated
   \end{itemize}
 
   \bigskip
-  \textbf{Conclusion:} it is \textbf{hard to find a dataset that genuinely satisfies the model}
-  — the data generation pipeline must expose a separable noise injection point at the level of
+  \textbf{Conclusion:} it is \textbf{hard to find a dataset that genuinely satisfies the model}:
+  the data generation pipeline must expose a separable noise injection point at the level of
   the generative factors $\mathbf{s}$
 \end{frame}
 
