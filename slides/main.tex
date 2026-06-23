@@ -239,119 +239,119 @@
   \end{itemize}
 \end{frame}
 
-% ============================================================
-% SLIDE 6: LOG MI: DEFINITION
-% ============================================================
-\begin{frame}{Log Mutual Information: Definition}
-  \textbf{Pointwise log mutual information:}
-  \[
-    \log\frac{p(\mathbf{x}_1,\mathbf{x}_2)}{p(\mathbf{x}_1)\,p(\mathbf{x}_2)}
-    \;=\;
-    \log p(\mathbf{x}_1,\mathbf{x}_2)
-    \;-\;
-    \log p(\mathbf{x}_1)
-    \;-\;
-    \log p(\mathbf{x}_2)
-  \]
+%% ============================================================
+%% SLIDE 7: LOG MI: DEFINITION (commented out, may be useful later)
+%% ============================================================
+%\begin{frame}{Log Mutual Information: Definition}
+%  \textbf{Pointwise log mutual information:}
+%  \[
+%    \log\frac{p(\mathbf{x}_1,\mathbf{x}_2)}{p(\mathbf{x}_1)\,p(\mathbf{x}_2)}
+%    \;=\;
+%    \log p(\mathbf{x}_1,\mathbf{x}_2)
+%    \;-\;
+%    \log p(\mathbf{x}_1)
+%    \;-\;
+%    \log p(\mathbf{x}_2)
+%  \]
+%
+%  \bigskip
+%  \begin{columns}
+%    \column{0.48\textwidth}
+%    \begin{block}{Independent case: $\mathbf{x}_1\perp\!\!\!\perp\mathbf{x}_2$ (no shared $\mathbf{s}$)}
+%      \[
+%        p(\mathbf{x}_1,\mathbf{x}_2) = p(\mathbf{x}_1)\,p(\mathbf{x}_2)
+%      \]
+%      \[
+%        \text{ratio}=1 \;\Rightarrow\; \log\text{MI}=0
+%      \]
+%    \end{block}
+%
+%    \column{0.48\textwidth}
+%    \begin{block}{Dependent case: shared $\mathbf{s}$}
+%      \[
+%        p(\mathbf{x}_1,\mathbf{x}_2) \neq p(\mathbf{x}_1)\,p(\mathbf{x}_2)
+%      \]
+%      \[
+%        \log\text{MI} \neq 0
+%      \]
+%      Positive / negative depending on the correlation direction
+%    \end{block}
+%  \end{columns}
+%
+%  \bigskip
+%  \textbf{Intuition:} the log MI measures how much more likely a pair $(\mathbf{x}_1,\mathbf{x}_2)$ is under the joint distribution compared to if the two views were independent
+%\end{frame}
 
-  \bigskip
-  \begin{columns}
-    \column{0.48\textwidth}
-    \begin{block}{Independent case: $\mathbf{x}_1\perp\!\!\!\perp\mathbf{x}_2$ (no shared $\mathbf{s}$)}
-      \[
-        p(\mathbf{x}_1,\mathbf{x}_2) = p(\mathbf{x}_1)\,p(\mathbf{x}_2)
-      \]
-      \[
-        \text{ratio}=1 \;\Rightarrow\; \log\text{MI}=0
-      \]
-    \end{block}
+%% ============================================================
+%% SLIDE 8: LOG MI: KEY FACTORISATION (commented out, may be useful later)
+%% ============================================================
+%\begin{frame}{Log MI: The Key Factorisation}
+%  Under the component-wise corruption model, the log MI decomposes \textbf{component-wise}:
+%
+%  \bigskip
+%  \[
+%    \log p(\mathbf{x}_1,\mathbf{x}_2) - \log p(\mathbf{x}_1)\,p(\mathbf{x}_2)
+%    \;=\;
+%    \sum_i \alpha_i\!\bigl(s_i,\,g_i(s_i,n_i)\bigr)
+%    \;-\;
+%    \sum_i \delta_i\!\bigl(g_i(s_i,n_i)\bigr)
+%  \]
+%  where $s_i = f_{1,i}^{-1}(\mathbf{x}_1)$ and $g_i(s_i,n_i) = f_{2,i}^{-1}(\mathbf{x}_2)$.
+%
+%  \bigskip
+%  \textbf{Why this is the central structural result:}
+%  \begin{itemize}
+%    \item Each term depends on only \textbf{one component} of $\mathbf{s}$ at a time
+%    \item The log MI is a sum of per-component contributions (no cross-component terms)
+%    \item A classifier trained to estimate the log MI \textbf{must} learn this component-wise structure
+%    \item $\Rightarrow$ the classifier's internal representation encodes the \textbf{independent components of $\mathbf{s}$}
+%  \end{itemize}
+%
+%  \medskip
+%  This factorisation is the engine behind \emph{all} identifiability proofs in the paper.
+%\end{frame}
 
-    \column{0.48\textwidth}
-    \begin{block}{Dependent case: shared $\mathbf{s}$}
-      \[
-        p(\mathbf{x}_1,\mathbf{x}_2) \neq p(\mathbf{x}_1)\,p(\mathbf{x}_2)
-      \]
-      \[
-        \log\text{MI} \neq 0
-      \]
-      Positive / negative depending on the correlation direction
-    \end{block}
-  \end{columns}
-
-  \bigskip
-  \textbf{Intuition:} the log MI measures how much more likely a pair $(\mathbf{x}_1,\mathbf{x}_2)$ is under the joint distribution compared to if the two views were independent
-\end{frame}
-
-% ============================================================
-% SLIDE 6: LOG MI: KEY FACTORISATION
-% ============================================================
-\begin{frame}{Log MI: The Key Factorisation}
-  Under the component-wise corruption model, the log MI decomposes \textbf{component-wise}:
-
-  \bigskip
-  \[
-    \log p(\mathbf{x}_1,\mathbf{x}_2) - \log p(\mathbf{x}_1)\,p(\mathbf{x}_2)
-    \;=\;
-    \sum_i \alpha_i\!\bigl(s_i,\,g_i(s_i,n_i)\bigr)
-    \;-\;
-    \sum_i \delta_i\!\bigl(g_i(s_i,n_i)\bigr)
-  \]
-  where $s_i = f_{1,i}^{-1}(\mathbf{x}_1)$ and $g_i(s_i,n_i) = f_{2,i}^{-1}(\mathbf{x}_2)$.
-
-  \bigskip
-  \textbf{Why this is the central structural result:}
-  \begin{itemize}
-    \item Each term depends on only \textbf{one component} of $\mathbf{s}$ at a time
-    \item The log MI is a sum of per-component contributions (no cross-component terms)
-    \item A classifier trained to estimate the log MI \textbf{must} learn this component-wise structure
-    \item $\Rightarrow$ the classifier's internal representation encodes the \textbf{independent components of $\mathbf{s}$}
-  \end{itemize}
-
-  \medskip
-  This factorisation is the engine behind \emph{all} identifiability proofs in the paper.
-\end{frame}
-
-% ============================================================
-% SLIDE 7: LOG MI: COUNTERFACTUAL + SHUFFLING
-% ============================================================
-\begin{frame}{Log MI: Counterfactual Interpretation \& Shuffling Trick}
-  \begin{columns}[T]
-    \column{0.50\textwidth}
-      \textbf{What is $p(\mathbf{x}_1)\,p(\mathbf{x}_2)$?}
-
-      \bigskip
-      \begin{block}{Counterfactual Distribution}
-        $p(\mathbf{x}_1)\,p(\mathbf{x}_2)$ is the distribution of $(\mathbf{x}_1,\mathbf{x}_2)$ \emph{if
-        the two views shared no common source}
-
-        \medskip
-        \textit{``What would $\mathbf{x}_2$ look like if it came from a \textbf{different} $\mathbf{s}$ than $\mathbf{x}_1$?''}
-
-        \medskip
-        $\to$ removes \emph{all} information shared between views
-      \end{block}
-
-    \column{0.46\textwidth}
-      \textbf{Sampling via batch shuffling}
-
-      \medskip
-      We never compute $p(\mathbf{x}_1)\,p(\mathbf{x}_2)$ analytically.
-      Instead:
-      \begin{enumerate}
-        \item Draw $\mathbf{x}_1^{(i)}$ from sample $i$;
-              draw $\mathbf{x}_2^{(j)}$ from sample $j\neq i$
-        \item Different index $\Rightarrow$ different $\mathbf{s}$ $\Rightarrow$
-              pair is from $p(\mathbf{x}_1)\,p(\mathbf{x}_2)$
-      \end{enumerate}
-
-      \medskip
-      These are the \textbf{negative pairs} in contrastive learning.
-
-      \medskip
-      No density estimation required:
-      just re-pair samples within the batch!
-  \end{columns}
-\end{frame}
+%% ============================================================
+%% SLIDE 9: LOG MI: COUNTERFACTUAL + SHUFFLING (commented out, may be useful later)
+%% ============================================================
+%\begin{frame}{Log MI: Counterfactual Interpretation \& Shuffling Trick}
+%  \begin{columns}[T]
+%    \column{0.50\textwidth}
+%      \textbf{What is $p(\mathbf{x}_1)\,p(\mathbf{x}_2)$?}
+%
+%      \bigskip
+%      \begin{block}{Counterfactual Distribution}
+%        $p(\mathbf{x}_1)\,p(\mathbf{x}_2)$ is the distribution of $(\mathbf{x}_1,\mathbf{x}_2)$ \emph{if
+%        the two views shared no common source}
+%
+%        \medskip
+%        \textit{``What would $\mathbf{x}_2$ look like if it came from a \textbf{different} $\mathbf{s}$ than $\mathbf{x}_1$?''}
+%
+%        \medskip
+%        $\to$ removes \emph{all} information shared between views
+%      \end{block}
+%
+%    \column{0.46\textwidth}
+%      \textbf{Sampling via batch shuffling}
+%
+%      \medskip
+%      We never compute $p(\mathbf{x}_1)\,p(\mathbf{x}_2)$ analytically.
+%      Instead:
+%      \begin{enumerate}
+%        \item Draw $\mathbf{x}_1^{(i)}$ from sample $i$;
+%              draw $\mathbf{x}_2^{(j)}$ from sample $j\neq i$
+%        \item Different index $\Rightarrow$ different $\mathbf{s}$ $\Rightarrow$
+%              pair is from $p(\mathbf{x}_1)\,p(\mathbf{x}_2)$
+%      \end{enumerate}
+%
+%      \medskip
+%      These are the \textbf{negative pairs} in contrastive learning.
+%
+%      \medskip
+%      No density estimation required:
+%      just re-pair samples within the batch!
+%  \end{columns}
+%\end{frame}
 
 % ============================================================
 % SLIDE 10: ONE NOISELESS VIEW: SETTING
@@ -565,9 +565,6 @@
           fully deterministic setting
   \end{itemize}
 
-  \medskip
-  \textbf{Practical meaning:} the views must be different enough: two identical sensors
-  provide nothing; two genuinely different modalities enable identifiability
 \end{frame}
 
 % ============================================================
