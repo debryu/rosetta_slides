@@ -614,7 +614,39 @@
 \end{frame}
 
 % ============================================================
-% APPENDIX A — KEY FACTORISATION DERIVATION
+% APPENDIX A — SDV DEFINITION: EQS. 9-11 AND DERIVATIVE DIRECTION
+% ============================================================
+\begin{frame}{SDV: Formal Definition and Proof-Correctness Subtlety}
+  \begin{definition}[Definition 2 --- Sufficiently Distinct Views]
+    Let $\alpha_i(y_i, t_i)$, $i=1,\ldots,N$ be functions of two arguments.
+    Denote by $\boldsymbol{\alpha}$ the vector of functions and define
+    \begin{align}
+      \alpha_i'(y_i,\,t_i) &= \partial\alpha_i(y_i,t_i)/\partial t, \tag{9}\\
+      \alpha_i''(y_i,\,t_i) &= \partial^2\alpha_i(y_i,t_i)/\partial t^2, \tag{10}\\
+      \mathbf{w}_{\boldsymbol{\alpha}}(\mathbf{y},\mathbf{t})
+        &= \bigl(\alpha_1'',\ldots,\alpha_D'',\;\alpha_1',\ldots,\alpha_D'\bigr). \tag{11}
+    \end{align}
+    $\boldsymbol{\alpha}$ satisfies SDV if for any $\mathbf{y}$, $\exists\; 2D$ distinct values
+    $\mathbf{t}_j$ such that $\{\mathbf{w}_{\boldsymbol{\alpha}}(\mathbf{y},\mathbf{t}_j)\}_{j=1}^{2D}$
+    are linearly independent.
+  \end{definition}
+
+  \begin{alertblock}{Proof of Theorem 1 requires derivatives w.r.t.\ the first argument}
+    The proof differentiates $r^*(\mathbf{x}_1,\mathbf{x}_2)=\log\mathrm{MI}$
+    w.r.t.\ $\mathbf{x}_1$, which encodes $y_i = s_i$ (the \emph{first} argument of
+    $\alpha_i$). The linear system that SDV must render non-singular involves
+    $\partial\alpha_i/\partial y_i$ and $\partial^2\alpha_i/\partial y_i^2$, not the
+    $t$-derivatives in Eqs.\ (9)--(10).
+
+    \smallskip
+    $\Rightarrow$ For correctness, Eqs.\ (9)--(10) should use $\partial/\partial y$
+    (first argument); $\partial/\partial t$ is appropriate for Corollary~3, which
+    recovers $\mathbf{x}_2$.
+  \end{alertblock}
+\end{frame}
+
+% ============================================================
+% APPENDIX B — KEY FACTORISATION DERIVATION
 % ============================================================
 \begin{frame}{Proof: Key Log-MI Factorisation (Equation 8)}
   \textbf{Goal:} show $\log p(\mathbf{x}_1,\mathbf{x}_2)-\log p(\mathbf{x}_1)p(\mathbf{x}_2)$
@@ -647,7 +679,7 @@
 \end{frame}
 
 % ============================================================
-% APPENDIX B — THEOREM 1 PROOF SKETCH
+% APPENDIX C — THEOREM 1 PROOF SKETCH
 % ============================================================
 \begin{frame}{Proof Sketch: Theorem 1 (One Noiseless View)}
   \textbf{Setting:} $\mathbf{x}_1=\mathbf{f}_1(\mathbf{s})$,
