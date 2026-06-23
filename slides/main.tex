@@ -515,15 +515,8 @@
 
   \bigskip
   \begin{theorem}[Theorem 8 (informal)]
-    If the per-view noises $\mathbf{n}_i$ are mutually independent across views and the
-    corruption functions $\mathbf{g}_i$ (parameterised by $\boldsymbol{\lambda}_i$) satisfy
-    the SDV condition with bounded noise variance, then exact recovery of $\mathbf{s}$ up
-    to affine ambiguity is possible in the limit $N\to\infty$.
-  \end{theorem}
-
-  \bigskip
-  \textbf{Intuition:} the proof applies the \textbf{Kolmogorov Strong Law of Large Numbers}:
-  given independent random variables with bounded variances, their running average converges
+    the proof applies the \textbf{Kolmogorov Strong Law of Large Numbers}:
+  given independent random variables with bounded variances, their average converges
   \emph{almost surely} to the true mean.
   Since the noises $\mathbf{n}_i$ are independent and zero-mean, the per-view corruptions
   cancel out in the average, leaving only $\mathbf{s}$:
@@ -533,8 +526,9 @@
     \Omega^N(\mathbf{s},\mathbf{n})
     = \frac{1}{N}\sum_{i=1}^N e_i\circ k_i(\mathbf{s}+\mathbf{n}_i)
     \;\xrightarrow{N\to\infty}\;\mathbf{s}
-    \quad\text{(a.s.)}
   \]
+  \end{theorem}
+
 \end{frame}
 
 % ============================================================
@@ -554,12 +548,8 @@
   \end{definition}
 
   \begin{alertblock}{Note}
-    The derivation of this definition may be incorrect; treat with caution.
+    The derivation in the paper probably incorrect; use partial derivatives with respect y not t.
   \end{alertblock}
-
-  \medskip
-  \textbf{Informal meaning:} the conditional log-probability of the corruption must vary
-  \emph{sufficiently} as a function of the source value
 
   \medskip
   \begin{itemize}
@@ -585,17 +575,6 @@
     $\Rightarrow$ corruption is applied to $\mathbf{x}$, not component-wise to $\mathbf{s}$
     $\Rightarrow$ model assumptions are violated
   \end{alertblock}
-
-  \bigskip
-  \textbf{Example: Shapes3D dataset}
-  \begin{itemize}
-    \item Has explicit generative factors: floor colour, wall colour, object shape, scale,
-          orientation, \ldots
-    \item Looks ideal on paper, but \textbf{no mechanism to inject noise at the factor level}
-          before rendering
-    \item Any augmentation applied post-rendering operates on $\mathbf{x}$, not on $\mathbf{s}$
-    \item $\Rightarrow$ the component-wise corruption assumption is violated
-  \end{itemize}
 
   \bigskip
   \textbf{Conclusion:} it is \textbf{hard to find a dataset that genuinely satisfies the model}:
