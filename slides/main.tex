@@ -522,18 +522,19 @@
   \end{theorem}
 
   \bigskip
-  \textbf{Intuition:} independent noises average out while the common signal accumulates
+  \textbf{Intuition:} the proof applies the \textbf{Kolmogorov Strong Law of Large Numbers}:
+  given independent random variables with bounded variances, their running average converges
+  \emph{almost surely} to the true mean.
+  Since the noises $\mathbf{n}_i$ are independent and zero-mean, the per-view corruptions
+  cancel out in the average, leaving only $\mathbf{s}$:
   \[
     \mathbf{s}
     \;\approx\;
     \Omega^N(\mathbf{s},\mathbf{n})
     = \frac{1}{N}\sum_{i=1}^N e_i\circ k_i(\mathbf{s}+\mathbf{n}_i)
     \;\xrightarrow{N\to\infty}\;\mathbf{s}
+    \quad\text{(a.s.)}
   \]
-
-  \medskip
-  This extends the two-view results of §3.1--3.2 by exploiting infinitely many views
-  rather than vanishingly small noise in finitely many views.
 \end{frame}
 
 % ============================================================
@@ -551,6 +552,10 @@
     \hfill
     $\bigl(\alpha_i'=\partial\alpha_i/\partial t,\;\alpha_i''=\partial^2\alpha_i/\partial t^2\bigr)$
   \end{definition}
+
+  \begin{alertblock}{Note}
+    The derivation of this definition may be incorrect; treat with caution.
+  \end{alertblock}
 
   \medskip
   \textbf{Informal meaning:} the conditional log-probability of the corruption must vary
